@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cal</title>
+    <style>
+        .first {
+            margin-right: 30px;
+        }
+
+        .prices {
+            margin: 0px;
+        }
+    </style>
+</head>
+
+<body >
+    <div style="display: flex; flex-wrap:wrap; margin-bottom:60px">
+    <div class="first">
+        <div class="second">
+            <form action="/cal/get_info/" method="get" style="display: inline-block;">
+                User Token <input type="text" name="token" value="{{info.token}}" autocomplete="off" /> <br>
+                <input type="submit" value="OK" style="margin: 5px 0px 10px 0px;">
+                <p style="display: inline-block; margin: 0px;">{% if status %} Successful
+                    {% elif status_init %}{% else %} Doesn't exist {% endif %} </p>
+            </form>
+        </div>
+        {% if status %}
+        <div class="second">
+            <form action="/cal/save/" method="post">
+                {% csrf_token %}
+                <table>
+                    <tr style="display: none">
+                        <td>token </td>
+                        <td><input type="text" name="token" value="{{info.token}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>system </td>
+                        <td><input type="text" name="system" value="{{info.system}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>tax_reaction </td>
+                        <td><input type="text" name="tax_reaction" value="{{info.tax_reaction}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>tax_component </td>
+                        <td><input type="text" name="tax_component" value="{{info.tax_component}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>tax_ship </td>
+                        <td><input type="text" name="tax_ship" value="{{info.tax_ship}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>index_reaction </td>
+                        <td><input type="text" name="index_reaction" value="{{info.index_reaction}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>index_manufacturing </td>
+                        <td><input type="text" name="index_manufacturing" value="{{info.index_manufacturing}}" /> <br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>me_reaction </td>
+                        <td><input type="text" name="me_reaction" value="{{info.me_reaction}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>me_component </td>
+                        <td><input type="text" name="me_component" value="{{info.me_component}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>me_ship_s </td>
+                        <td><input type="text" name="me_ship_s" value="{{info.me_ship_s}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>me_ship_m </td>
+                        <td><input type="text" name="me_ship_m" value="{{info.me_ship_m}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>me_cap </td>
+                        <td><input type="text" name="me_cap" value="{{info.me_cap}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>me_cap_comp </td>
+                        <td><input type="text" name="me_cap_comp" value="{{info.me_cap_comp}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>tax_t1 </td>
+                        <td><input type="text" name="tax_t1" value="{{info.tax_t1}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>min_reaction </td>
+                        <td><input type="text" name="min_reaction" value="{{info.min_reaction}}" /> <br></td>
+                    </tr>
+                    <tr>
+                        <td>update_price </td>
+                        <td><input type="checkbox" name="update_price" value=update_price
+                                {% if info.update_price %}checked{% endif %} style="margin: 0px;" /><br></td>
+                    </tr>
+                    <tr>
+                        <td>update_index </td>
+                        <td><input type="checkbox" name="update_index" value="update_index" style="margin: 0px;" /><br>
+                        </td>
+                    </tr>
+                </table>
+                <input type="submit" value="Save" />
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    {% if status %}
+        <div class="first">
+            <p style="margin: 0px">Input(Name Me Runs Total)</p>
+            <form style="width: 200px;height: 100%" action="/cal/start/1/" method="post">
+                {% csrf_token %}
+                <input type="text" name="token" value="{{info.token}}" style="display: none" />
+                <textarea style="width: 200px;height: 85%" name="req">{{ req }}</textarea>
+                <input type="submit" value="Start" /><div>
+                {% if fee_status %}<p class="prices">Job Fee:{{ fee.final }}M</p>{% endif %}
+                {% if price_status %}<p class="prices">Sell:{{ prices.req_sell }}M <br> Buy:{{ prices.req_buy }}M</p>
+                {% endif %}</form></div>
+            </form>
+        </div>
+
+        <div class="first">
+            <p style="margin: 0px">Component</p>
+            <form style="width: 250px;height: 100%" action="/cal/start/2/" method="post">
+                {% csrf_token %}
+                <input type="text" name="token" value="{{info.token}}" style="display: none" />
+                <textarea style="width: 250px; height: 40%; display: block"
+                    name="component_t2">{% for name,quantity in component_t2.items %}{{ name }} {{ quantity }}&#10;{% endfor %}</textarea>
+                <textarea style="width: 250px; height: 40%; display: block"
+                    name="component_t1">{% for name,quantity in component_t1.items %}{{ name }} {{ quantity }}&#10;{% endfor %}</textarea>
+                <input type="submit" value="From Here" />
+                {% if fee_status %}<p class="prices">Job Fee:{{ fee.component }}M</p>{% endif %}
+                {% if price_status %}<p class="prices">Sell-T2:{{ prices.component_t2_sell }}M <br>
+                    Buy-T2:{{ prices.component_t2_buy }}M</p>{% endif %}
+                {% if price_status %}<p class="prices">Sell-Others:{{ prices.component_t1_sell }}M <br>
+                    Buy-Others:{{ prices.component_t1_buy }}M</p>{% endif %}
+            </form>
+        </div>
+
+        <div class="first">
+            <p style="margin: 0px">Advanced</p>
+            <form style="width: 250px;height: 100%" action="/cal/start/3/" method="post">
+                {% csrf_token %}
+                <input type="text" name="token" value="{{info.token}}" style="display: none" />
+                <textarea style="width: 250px; height: 80%; display: block"
+                    name="advanced">{% for name,quantity in advanced.items %}{{ name }} {{ quantity }}&#10;{% endfor %}</textarea>
+                <input type="submit" value="From Here" />
+                {% if fee_status %}<p class="prices">Job Fee:{{ fee.complex }}M</p>{% endif %}
+                {% if price_status %}<p class="prices">Sell:{{ prices.advanced_sell }}M <br>
+                    Buy:{{ prices.advanced_buy }}M</p>{% endif %}
+            </form>
+        </div>
+
+        <div class="first">
+            <p style="margin: 0px">Processed</p>
+            <form style="width: 250px;height: 100%" action="/cal/start/4/" method="post">
+                {% csrf_token %}
+                <input type="text" name="token" value="{{info.token}}" style="display: none" />
+                <textarea style="width: 250px; height: 80%; display: block"
+                    name="processed">{% for name,quantity in processed.items %}{{ name }} {{ quantity }}&#10;{% endfor %}&#10;{% for name,quantity in processed_fuel.items %}{{ name }} {{ quantity }}&#10;{% endfor %}</textarea>
+                <input type="submit" value="From Here" />
+                {% if fee_status %}<p class="prices">Job Fee:{{ fee.simple }}M</p>{% endif %}
+                {% if price_status %}<p class="prices">Sell:{{ prices.processed_sell }}M <br>
+                    Buy:{{ prices.processed_buy }}M</p>{% endif %}
+            </form>
+        </div>
+
+        <div class="first">
+            <p style="margin: 0px">Raw</p>
+            {#    <form style="width: 200px;height: 100%" action="/cal/start/" method="post">#}
+            {#        {% csrf_token %}#}
+            {#        <input type="text" name="token" value="{{info.token}}" style="display: none"/>#}
+            <textarea style="width: 250px; height: 80%; display: block"
+                name="raw">{% for name,quantity in raw.items %}{{ name }} {{ quantity }}&#10;{% endfor %}&#10;{% for name,quantity in raw_fuel.items %}{{ name }} {{ quantity }}&#10;{% endfor %}</textarea>
+            {#        <input type="submit" value="Start" />#}
+            {% if fee_status %}<p class="prices">Total Job Fee:{{ fee.total }}M</p>{% endif %}
+            {% if price_status %}<p class="prices">Sell:{{ prices.raw_sell }}M <br> Buy:{{ prices.raw_buy }}M</p>
+            {% endif %}
+            {#    </form>#}
+        </div>
+    </div>
+    <div style="display: flex; flex-wrap:wrap">
+        <div class="first">
+            <p style="margin: 0px">T1(Name Total Me=0 Runs)<br>Run for sub:999, for cap 1</p>
+            <form style="width: 250px;height: 300px;" action="/cal/start/5/" method="post">
+                {% csrf_token %}
+                <input type="text" name="token" value="{{info.token}}" style="display: none" />
+                <textarea style="width: 250px; height: 50%; display: block"
+                    name="t1_name">{% for line in t1_list %}{% for i in line %}{{ i }} {% endfor %}&#10;{% endfor %}</textarea>
+                    Ratio:<input type="text" name="ratio" value="{{ratio}}"/>
+                    <textarea style="width: 250px; height: 30%; display: block"
+                    name="orename">{% for i in orename %}{{ i }}&#10;{% endfor %}</textarea>
+                <input type="submit" value="From Here" />
+                {% if fee_status_t1 %}<p class="prices">Job Fee:{{ fee_1.final }}M</p>{% endif %}
+                {% if price_status_1 %}<p class="prices">Sell:{{ prices_t1.t1_final_sell }}M <br>
+                    Buy:{{ prices_t1.t1_final_buy }}M</p>{% endif %}
+            </form>
+        </div>
+        <div class="first">
+            <p style="margin: 0px">T1 Comp or Ship</p>
+{#            <form style="width: 250px;height: 300px;" action="/cal/start/5/" method="post">#}
+{#                {% csrf_token %}#}
+{#                <input type="text" name="token" value="{{info.token}}" style="display: none" />#}
+                <textarea style="width: 250px; height: 80%; display: block"
+                    name="t1_comp">{% for name,quantity in t1_comp.items %}{{ name }} {{ quantity }}&#10;{% endfor %}</textarea>
+{#                <input type="submit" value="From Here" />#}
+                {% if fee_status_t1 %}<p class="prices">Job Fee:{{ fee_1.component }}M</p>{% endif %}
+                {% if price_status_1 %}<p class="prices">Sell:{{ prices_t1.t1_t_sell }}M <br>
+                    Buy:{{ prices_t1.t1_t_buy }}M</p>{% endif %}
+{#            </form>#}
+        </div>
+        <div class="first">
+            <p style="margin: 0px">Metal</p>
+            <form style="width: 250px;height: 300px;" action="/cal/start/6/" method="post">
+                {% csrf_token %}
+                <input type="text" name="token" value="{{info.token}}" style="display: none" />
+                <textarea style="width: 250px; height: 50%; display: block"
+                    name="metal_123">{% for name,quantity in metal.items %}{{ name }} {{ quantity }}&#10;{% endfor %}</textarea>
+                    Ratio:<input type="text" name="ratio" value="{{ratio}}"/>
+                <textarea style="width: 250px; height: 30%; display: block"
+                    name="orename">{% for i in orename %}{{ i }}&#10;{% endfor %}</textarea>
+                <input type="submit" value="From Here" />
+                {% if fee_status_t1 %}<p class="prices">Total Job Fee:{{ fee_1.total }}M</p>{% endif %}
+                {% if price_status_1 %}<p class="prices">Sell:{{ prices_t1.metal_sell }}M <br>
+                    Buy:{{ prices_t1.metal_buy }}M</p>{% endif %}
+            <!-- </form> -->
+        </div>
+        <div class="first">
+            <p style="margin: 0px">Ore</p>
+            <!-- <form style="width: 250px;height: 300px;" action="/cal/start/6" method="post"> -->
+                <!-- {% csrf_token %} -->
+                <!-- <input type="text" name="token" value="{{info.token}}" style="display: none" /> -->
+                <textarea style="width: 300px; height: 80%; display: block"
+                    name="metal">{% for name,quantity in ore.items %}{{ name }} {{ quantity }}&#10;{% endfor %}</textarea>
+                <!-- <input type="submit" value="From Here" /> -->
+                {% if orestatus %}<p class="prices">Jita Buy:{{ ore_total_price }}M</p>{% endif %}
+            <!-- </form> -->
+        </div>
+    </div>
+    {% endif %}
+</body>
+
+</html>
