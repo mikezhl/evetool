@@ -1,0 +1,12 @@
+asgiref==3.2.3
+certifi==2019.11.28
+chardet==3.0.4
+Django==3.0.2
+idna==2.8
+mysqlclient==1.4.6
+numpy==1.18.1+mkl
+pytz==2019.3
+requests==2.22.0
+scipy==1.4.1
+sqlparse==0.3.0
+urllib3==1.25.8

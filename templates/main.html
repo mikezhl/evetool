@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+
+<body >
+    <div style="display: flex; flex-wrap:wrap; margin-bottom:60px">
+        <form action="/cal/cal_init/" method="get" style="display: inline-block;">
+            User Token <input type="text" name="token" value="{{info.token}}" autocomplete="off" /> <br>
+            <input type="submit" value="OK" style="margin: 5px 0px 10px 0px;">
+            <p style="display: inline-block; margin: 0px;">{% if status %} Successful
+                {% elif status_init %}{% else %} Doesn't exist {% endif %} </p>
+        </form>
+    </div>
+
+</body>
+
+</html>
