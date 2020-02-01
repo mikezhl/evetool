@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from cal.models import User, Sdenames, Sdeconvert, Sdematerial, Sderuns, Sdecate, Sdeore
+from cal.models import User, Sdenames, Sdeconvert, Sdematerial, Sderuns, Sdecate, Sdeore, Inventory
 import xml.etree.ElementTree as ET
 from urllib import request as urllib_request
 import re
@@ -28,44 +28,53 @@ def process_l(raw):
     lines = raw.split("\r\n")
     lines_full = [i for i in lines if i != '']
     m = 0
+    customised = 0
     for i in lines_full:
         name = ""
         line = re.split(' |,|\t| ', i)
-        line_len = len(line)
-        line_len += 1
+        print(line)
         for j in line:
+            print(j)
+            if j.startswith("!"):
+                print(j)
+                customised = float(j[1:])
+                break
+            if m ==3:
+                break
             try:
                 k = int(j)
                 m += 1
             except:
                 name += j + " "
-                line_len = line_len - 1
             if m ==1:
                 name = name.strip(" ")
                 item_id = Sdenames.objects.filter(adjprice__gt=1).get(typename__exact=name).typeid
                 output[item_id] = []
             if m > 0:
                 output[item_id].append(k)
-        m = 0
-        if line_len in [1,2,3]:
+        if m < 3:
             if Sdenames.objects.get(typeid=item_id).groupid in [334, 913]:
                 runs = int(Sderuns.objects.get(typeid=item_id).maxproductionlimit)
             else:
                 runs = 10000
-        if line_len ==1:
+        if m == 0:
             output[item_id].append(1)
             output[item_id].append(0)
             output[item_id].append(runs)
             output[item_id].append(name)
-        elif line_len ==2:
+        elif m == 1:
             output[item_id].append(0)
             output[item_id].append(runs)
             output[item_id].append(name)
-        elif line_len ==3:
+        elif m ==2:
             output[item_id].append(runs)
             output[item_id].append(name)
-        elif line_len ==4:
+        elif m ==3:
             output[item_id].append(name)
+        m = 0
+        if customised != 0:
+            output[item_id].append(customised)
+            customised = 0;
     return output
 
 # Turn the input raw data into dictionary {typeid : [total,name]

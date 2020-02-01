@@ -1,13 +1,13 @@
 from django.db import models
 
-class Remain(models.Model):
+class Inventory(models.Model):
     token = models.IntegerField(blank=True, null=True)
     item_id = models.IntegerField(blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'remain'
+        db_table = 'inventory'
 
 
 class Sdecate(models.Model):
