@@ -168,6 +168,12 @@
             {% if price.metal_sell %}<p class="prices">Sell:{{ price.metal_sell }}M <br> Buy:{{ price.metal_sell }}M</p>{% endif %}
         </div>
         <div class="first">
+            <p>Ore</p>
+            <textarea name="ore_result" style="width: 250px;height: 300px;">{% for i,j in ore_result.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
+            {% if fee.ore_result %}<p class="prices">Job Fee:{{ fee.ore_result }}M</p>{% endif %}
+            {% if price.ore_result_sell %}<p class="prices">Sell:{{ price.ore_result_sell }}M <br> Buy:{{ price.ore_result_buy }}M</p>{% endif %}
+        </div>
+        <div class="first">
             <p>Inventory</p>
             <textarea name="inventory" style="width: 250px;height: 300px;">{% for i,j in inventory.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
             {% if price.remain_sell %}<p class="prices">Sell:{{ price.remain_sell }}M <br> Buy:{{ price.remain_buy }}M</p>{% endif %}

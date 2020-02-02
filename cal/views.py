@@ -32,11 +32,8 @@ def process_l(raw):
     for i in lines_full:
         name = ""
         line = re.split(' |,|\t| ', i)
-        print(line)
         for j in line:
-            print(j)
             if j.startswith("!"):
-                print(j)
                 customised = float(j[1:])
                 break
             if m ==3:
@@ -54,7 +51,8 @@ def process_l(raw):
                 output[item_id].append(k)
         if m < 3:
             if Sdenames.objects.get(typeid=item_id).groupid in [334, 913]:
-                runs = int(Sderuns.objects.get(typeid=item_id).maxproductionlimit)
+                id_b = int(Sdeconvert.objects.get(producttypeid=item_id).typeid)
+                runs = int(Sderuns.objects.get(typeid=id_b).maxproductionlimit)
             else:
                 runs = 10000
         if m == 0:
@@ -110,6 +108,7 @@ def main(request, mode):
     use_remain = 0
     price = {}
     fee = {}
+    fee_temp = {}
 
     # Get Data from request:
     if mode != 11:
@@ -127,16 +126,13 @@ def main(request, mode):
                 Data[i] = 50
         # Long Dictionary
         for i in ["products", "components_t1", "components_t2", "t1_input", "t1_pro"]:
-            try:
-                Data[i] = process_l(request.POST.get(i))
-            except:
-                Data[i] = {}
+            Data[i] = process_l(request.POST.get(i))
         # Short Dictionary
-        for i in ["inventory", "adv", "pro", "raw", "metal", "ore_result", "pro_fuel", "raw_fuel"]:
-            try:
-                Data[i] = process_s(request.POST.get(i))
-            except:
-                Data[i] = {}
+        for i in ["inventory", "adv", "pro", "raw", "metal", "ore_result"]:
+            Data[i] = process_s(request.POST.get(i))
+        # Hidden
+        for i in ["pro_fuel","raw_fuel"]:
+            Data[i] = {}
         # List
         try:
             Data["ore"] = [i for i in request.POST.get("ore").split("\r\n") if i != '']
@@ -177,8 +173,62 @@ def main(request, mode):
         User.objects.filter(token=user_token).update(**new_info)
     # From Product
     if mode == 1:
+        temp = {}
+        for i in ["components_t1", "components_t2", "adv", "pro", "raw", "pro_fuel", "raw_fuel"]:
+            Data[i] = {}
+        fee_temp["products"] = {}
+        for item_id, [total, me, runs, name, *me_structure] in Data["products"].items():
+            if me_structure:
+                me_structure = me_structure[0]
+                pass
+            elif Sdenames.objects.get(typeid=item_id).groupid in [1527, 831, 1283, 893, 830, 324, 1305, 541, 1534]:
+                me_structure = Data["info"].me_ship_s
+            elif Sdenames.objects.get(typeid=item_id).groupid in [543, 380, 1202, 906, 832, 894, 358, 1972, 963, 540, 833]:
+                me_structure = Data["info"].me_ship_m
+            else:
+                me_structure = 100
+            me_structure = float(me_structure)
+            total = int(total)
+            me = float(me)
+            runs = int(runs)
+            [full_runs, single_runs] = divmod(total, runs)
+            id_b = Sdeconvert.objects.get(producttypeid=item_id).typeid
+            material_table = Sdematerial.objects.filter(typeid=id_b).filter(activityid=1)
+            for line in material_table:
+                material_typeid = line.materialtypeid
+                material_quantity = max(
+                    math.ceil(round(int(line.quantity) * (100 - me) / 100 * me_structure / 100 * runs, 2)),
+                    runs) * full_runs
+                material_quantity += max(
+                    math.ceil(round(int(line.quantity) * (100 - me) / 100 * me_structure / 100 * single_runs, 2)),
+                    single_runs)
+                if material_typeid in temp.keys():
+                    temp[material_typeid] += material_quantity
+                    fee_temp["products"][material_typeid] += line.quantity * total
+                else:
+                    temp[material_typeid] = material_quantity
+                    fee_temp["products"][material_typeid] = line.quantity * total
+            # 分类产物
+            for item_id, total in temp.items():
+                name = Sdenames.objects.get(typeid=item_id).typename
+                if use_remain ==1:
+                    try:
+                        total = max(total - Data["inventory"][item_id][0],0)
+                    except:
+                        pass
+                if Sdenames.objects.get(typeid=item_id).groupid in [334, 913]:
+                    Data["components_t2"][item_id] = [total, 10, int(Sderuns.objects.get(typeid=id_b).maxproductionlimit),name]
+                elif Sdenames.objects.get(typeid=item_id).groupid == 429:
+                    Data["adv"][item_id] = [total, name]
+                elif Sdenames.objects.get(typeid=item_id).groupid == 428:
+                    Data["pro"][item_id] = [total, name]
+                elif Sdenames.objects.get(typeid=item_id).groupid == 428:
+                    Data["pro"][item_id] = [total, name]
+                else:
+                    Data["components_t1"][item_id] = [total, 0, 10000, name]
+    # From Components
+    if mode == 2:
         pass
-
 
 
     return render(request, "cal.html", {
