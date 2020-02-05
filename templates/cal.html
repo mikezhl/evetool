@@ -142,7 +142,7 @@
         <div class="first">
             <p>Raw</p>
             <textarea name="raw" style="width: 250px;height: 90%">{% for i,j in raw.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}&#10;{% for i,j in raw_fuel.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
-            {% if fee.raw %}<p class="prices">Job Fee:{{ fee.raw }}M</p>{% endif %}
+{#            {% if fee.raw %}<p class="prices">Job Fee:{{ fee.raw }}M</p>{% endif %}#}
             {% if price.raw_sell %}<p class="prices">Sell:{{ price.raw_sell }}M <br> Buy:{{ price.raw_buy }}M</p>{% endif %}
         </div>
         <div class="first">

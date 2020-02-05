@@ -174,19 +174,18 @@ def main(request, mode):
     # From Product
     if mode == 1:
         temp = {}
-        for i in ["components_t1", "components_t2", "adv", "pro", "raw", "pro_fuel", "raw_fuel"]:
+        for i in ["components_t1", "components_t2"]:
             Data[i] = {}
         fee_temp["products"] = {}
-        for item_id, [total, me, runs, name, *me_structure] in Data["products"].items():
-            if me_structure:
-                me_structure = me_structure[0]
-                pass
+        for item_id, [total, me, runs, name, *me_structure_p] in Data["products"].items():
+            if me_structure_p:
+                me_structure = me_structure_p[0]
             elif Sdenames.objects.get(typeid=item_id).groupid in [1527, 831, 1283, 893, 830, 324, 1305, 541, 1534]:
                 me_structure = Data["info"].me_ship_s
             elif Sdenames.objects.get(typeid=item_id).groupid in [543, 380, 1202, 906, 832, 894, 358, 1972, 963, 540, 833]:
                 me_structure = Data["info"].me_ship_m
             else:
-                me_structure = 100
+                me_structure = 99
             me_structure = float(me_structure)
             total = int(total)
             me = float(me)
@@ -217,6 +216,7 @@ def main(request, mode):
                     except:
                         pass
                 if Sdenames.objects.get(typeid=item_id).groupid in [334, 913]:
+                    id_b = int(Sdeconvert.objects.get(producttypeid=item_id).typeid)
                     Data["components_t2"][item_id] = [total, 10, int(Sderuns.objects.get(typeid=id_b).maxproductionlimit),name]
                 elif Sdenames.objects.get(typeid=item_id).groupid == 429:
                     Data["adv"][item_id] = [total, name]
@@ -227,8 +227,155 @@ def main(request, mode):
                 else:
                     Data["components_t1"][item_id] = [total, 0, 10000, name]
     # From Components
-    if mode == 2:
-        pass
+    if mode in [1, 2]:
+        if mode ==2:
+            for i in ["products", "components_t1"]:
+                Data[i] = {}
+        for i in ["adv"]:
+            Data[i] = {}
+        fee_temp["components_t2"] = {}
+        for item_id, [total, me, runs, name, *me_structure_c] in Data["components_t2"].items():
+            if me_structure_c:
+                me_structure = me_structure_c[0]
+            else:
+                me_structure = Data["info"].me_component
+            me_structure = float(me_structure)
+            total = int(total)
+            me = float(me)
+            runs = int(runs)
+            [full_runs, single_runs] = divmod(total, runs)
+            id_b = Sdeconvert.objects.get(producttypeid=item_id).typeid
+            material_table = Sdematerial.objects.filter(typeid=id_b).filter(activityid=1)
+            for line in material_table:
+                material_typeid = line.materialtypeid
+                material_quantity = max(
+                    math.ceil(round(int(line.quantity) * (100 - me) / 100 * me_structure / 100 * runs, 2)),
+                    runs) * full_runs
+                material_quantity += max(
+                    math.ceil(round(int(line.quantity) * (100 - me) / 100 * me_structure / 100 * single_runs, 2)),
+                    single_runs)
+                if material_typeid in Data["adv"].keys():
+                    Data["adv"][material_typeid][0] += material_quantity
+                    fee_temp["components_t2"][material_typeid] += line.quantity * total
+                else:
+                    Data["adv"][material_typeid] = [material_quantity, Sdenames.objects.get(typeid=material_typeid).typename]
+                    fee_temp["components_t2"][material_typeid] = line.quantity * total
+        if use_remain == 1:
+            for item_id, [total, name] in Data["adv"].items():
+                try:
+                    Data["adv"][item_id][0] = max(total - Data["inventory"][item_id][0], 0)
+                except:
+                    pass
+    # From Adv
+    if mode in [1, 2, 3]:
+        if mode ==3:
+            for i in ["products", "components_t1","components_t2"]:
+                Data[i] = {}
+        for i in ["pro"]:
+            Data[i] = {}
+        fee_temp["adv"] = {}
+        for item_id, [total, name, *me_structure_r] in Data["adv"].items():
+            product_num = Sdeconvert.objects.get(producttypeid=item_id).quantity
+            if me_structure_r:
+                me_structure = me_structure_r[0]
+            else:
+                me_structure = Data["info"].me_reaction
+            me_structure = float(me_structure)
+            total = int(total)
+            [need, excessed] = divmod(total, product_num)
+            if excessed != 0:
+                need += 1
+            [full_runs, single_runs] = divmod(need, Data["info"].min_reaction)
+            id_b = Sdeconvert.objects.get(producttypeid=item_id).typeid
+            material_table = Sdematerial.objects.filter(typeid=id_b).filter(activityid=11)
+            for line in material_table:
+                material_typeid = line.materialtypeid
+                material_quantity = max(
+                    math.ceil(round(int(line.quantity) * me_structure / 100 * Data["info"].min_reaction, 2)),
+                    Data["info"].min_reaction) * full_runs
+                material_quantity += max(
+                    math.ceil(round(int(line.quantity) * me_structure / 100 * single_runs, 2)),
+                    single_runs)
+                if material_typeid in Data["pro"].keys():
+                    Data["pro"][material_typeid][0] += material_quantity
+                    fee_temp["adv"][material_typeid] += line.quantity * total
+                else:
+                    Data["pro"][material_typeid] = [material_quantity, Sdenames.objects.get(typeid=material_typeid).typename]
+                    fee_temp["adv"][material_typeid] = line.quantity * total
+        temp = {}
+        for item_id, [total,name] in Data["pro"].items():
+            if use_remain ==1:
+                try:
+                    if Sdenames.objects.get(typeid=item_id).groupid!=1136:
+                        total = max(total - Data["inventory"][item_id][0],0)
+                except:
+                    pass
+            if Sdenames.objects.get(typeid=item_id).groupid==1136:
+                Data["pro_fuel"][item_id] = [total, name]
+            else:
+                temp[item_id] = [total, name]
+        Data["pro"] = temp
+    # From Pro
+    if mode in [1, 2, 3, 4]:
+        if mode ==4:
+            for i in ["products", "components_t1","components_t2", "adv", "pro_fuel"]:
+                Data[i] = {}
+        for i in ["raw"]:
+            Data[i] = {}
+        fee_temp["pro"] = {}
+        delete_list = []
+        for item_id, [total, name, *me_structure_r] in Data["pro"].items():
+            if Sdenames.objects.get(typeid=item_id).groupid!=428:
+                delete_list.append(item_id)
+                Data["pro_fuel"][item_id] = [total,name]
+                continue
+            product_num = Sdeconvert.objects.get(producttypeid=item_id).quantity
+            if me_structure_r:
+                me_structure = me_structure_r[0]
+            else:
+                me_structure = Data["info"].me_reaction
+            me_structure = float(me_structure)
+            total = int(total)
+            [need, excessed] = divmod(total, product_num)
+            if excessed != 0:
+                need += 1
+            [full_runs, single_runs] = divmod(need, Data["info"].min_reaction)
+            id_b = Sdeconvert.objects.get(producttypeid=item_id).typeid
+            material_table = Sdematerial.objects.filter(typeid=id_b).filter(activityid=11)
+            for line in material_table:
+                material_typeid = line.materialtypeid
+                material_quantity = max(
+                    math.ceil(round(int(line.quantity) * me_structure / 100 * Data["info"].min_reaction, 2)),
+                    Data["info"].min_reaction) * full_runs
+                material_quantity += max(
+                    math.ceil(round(int(line.quantity) * me_structure / 100 * single_runs, 2)),
+                    single_runs)
+                if material_typeid in Data["raw"].keys():
+                    Data["raw"][material_typeid][0] += material_quantity
+                    fee_temp["pro"][material_typeid] += line.quantity * total
+                else:
+                    Data["raw"][material_typeid] = [material_quantity, Sdenames.objects.get(typeid=material_typeid).typename]
+                    fee_temp["pro"][material_typeid] = line.quantity * total
+        temp = {}
+        if delete_list:
+            for i in delete_list:
+                del Data["pro"][i]
+        for item_id, [total,name] in Data["raw"].items():
+            if use_remain ==1:
+                try:
+                    total = max(total - Data["inventory"][item_id][0],0)
+                except:
+                    pass
+            if Sdenames.objects.get(typeid=item_id).groupid==1136:
+                try:
+                    last_time = Data["pro_fuel"][item_id][0]
+                except:
+                    last_time = 0
+                Data["raw_fuel"][item_id] = [total + last_time, name]
+            else:
+                temp[item_id] = [total, name]
+        Data["raw"] = temp
+
 
 
     return render(request, "cal.html", {
