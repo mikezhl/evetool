@@ -87,6 +87,8 @@ class User(models.Model):
     me_super = models.FloatField(blank=True, null=True)
     min_reaction = models.IntegerField(blank=True, null=True)
     update_price = models.IntegerField(blank=True, null=True)
+    temp_price = models.TextField(blank=True, null=True)
+    temp_fee = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = False

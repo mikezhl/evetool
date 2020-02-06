@@ -53,7 +53,7 @@ def process_l(raw):
                 output[item_id] = []
             if m > 0:
                 output[item_id].append(k)
-        if m != 0 and m < 3:
+        if  m < 3:
             if Sdenames.objects.get(typeid=item_id).groupid in [334, 913]:
                 id_b = int(Sdeconvert.objects.get(producttypeid=item_id).typeid)
                 runs = int(Sderuns.objects.get(typeid=id_b).maxproductionlimit)
@@ -106,6 +106,21 @@ def process_s(raw):
         output[item_id].append(name)
     return output
 
+# Cal the price
+def cal_price(raw):
+    url = "https://evepraisal.com/appraisal.json"
+    headers = {
+        'user-agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36"}
+    raw_textarea = ""
+    for item_id, [total,*others] in raw.items():
+        raw_textarea += others[-1] + " " + str(total) + "\r\n"
+    post_data = {'market': "jita", "raw_textarea": raw_textarea.encode()}
+    result = requests.post(url, headers=headers, data=post_data)
+    result_dict = json.loads(result.text)
+    buy = round(result_dict['appraisal']['totals']['buy'] / 1000000)
+    sell = round(result_dict['appraisal']['totals']['sell'] / 1000000)
+    return sell, buy
+
 # Main Cal function
 def main(request, mode):
     # All variables returned
@@ -113,9 +128,9 @@ def main(request, mode):
     user_token = request.POST.get("token")
     status = 1
     use_remain = 0
-    price = {}
     fee = {}
     fee_temp = {}
+    price = eval(User.objects.get(token=user_token).temp_price)
 
     # Get Data from request:
     if mode != 11:
@@ -154,6 +169,8 @@ def main(request, mode):
         for i in ["inventory", "products", "components_t1", "components_t2", "adv", "pro", "raw", "t1_input", "ore", "t1_pro", "metal", "ore_result", "pro_fuel", "raw_fuel"]:
             Data[i] = {}
         Data["ore_ratio"] = 50
+        price = {}
+        fee = {}
     # Save user info
     if mode == 12:
         new_info = {}
@@ -248,6 +265,8 @@ def main(request, mode):
         if mode ==2:
             for i in ["products", "components_t1"]:
                 Data[i] = {}
+            for i in ["products_sell", "products_buy"]:
+                price[i] = {}
         for i in ["adv"]:
             Data[i] = {}
         fee_temp["components_t2"] = {}
@@ -288,6 +307,8 @@ def main(request, mode):
         if mode ==3:
             for i in ["products", "components_t1","components_t2"]:
                 Data[i] = {}
+            for i in ["products_sell", "products_buy", "components_t1_sell", "components_t2_sell", "components_t1_buy", "components_t2_buy"]:
+                price[i] = {}
         for i in ["pro"]:
             Data[i] = {}
         fee_temp["adv"] = {}
@@ -337,6 +358,8 @@ def main(request, mode):
         if mode ==4:
             for i in ["products", "components_t1","components_t2", "adv", "pro_fuel"]:
                 Data[i] = {}
+            for i in ["products_sell", "products_buy", "components_t1_sell", "components_t2_sell", "components_t1_buy", "components_t2_buy", "adv_sell", "adv_buy"]:
+                price[i] = {}
         for i in ["raw"]:
             Data[i] = {}
         fee_temp["pro"] = {}
@@ -393,11 +416,13 @@ def main(request, mode):
                 temp[item_id] = [total, name]
         Data["raw"] = temp
     # From T1 Input
-    if mode ==5:
+    if mode == 5:
         fee_temp["t1_input"] = {}
         fee_temp["t1_pro"] = {}
         for i in ["t1_pro", "metal", "ore_result"]:
             Data[i] = {}
+        for i in ["ore_result_buy", "ore_result_sell"]:
+            price[i] = {}
         for item_id, [total, me, runs, name, *me_structure_t1] in Data["t1_input"].items():
             gp_id = Sdenames.objects.get(typeid=item_id).groupid
             if gp_id not in [547, 883, 485, 1538, 513, 659, 30]:
@@ -472,7 +497,7 @@ def main(request, mode):
                     except:
                         pass
     # Cal Compressed Ore
-    if mode ==6:
+    if mode == 6:
         Data["ore_result"] = {}
         ore_matrix = [[], [], [], [], [], [], []]
         b = []
@@ -496,23 +521,53 @@ def main(request, mode):
         post_data = {'market': "jita", "raw_textarea": raw_textarea.encode()}
         result = requests.post(url, headers=headers, data=post_data)
         result_dict = json.loads(result.text)
-        print(result_dict)
         price_ore = []
         ore_temp = {}
         for i in result_dict["appraisal"]["items"]:
             ore_temp[i["name"]] = i["prices"]["buy"]["max"]
         for i in Data["ore"]:
             price_ore.append(ore_temp[i])
-        print(price_ore)
-        print(ore_matrix)
-        print(b)
         res = linprog(c=price_ore, A_ub=ore_matrix, b_ub=b, bounds=x_bounds, method="interior-point")
-        print(res)
+        # print(price_ore)
+        # print(ore_matrix)
+        # print(b)
+        # print(res)
         raw_result = res.x
         n = 0
+        price["ore_result_buy"] = 0
         for i in Data["ore"]:
-            Data["ore_result"][i] = [math.ceil(raw_result[n]),i]
+            num = math.ceil(raw_result[n])
+            Data["ore_result"][i] = [num, i]
+            price["ore_result_buy"] += num * price_ore[n] / 1000000
             n += 1
+        price["ore_result_buy"] = round(price["ore_result_buy"], 2)
+    # Find the Price
+    if Data["info"].update_price == 1:
+        if mode in [1]:
+            price["products_sell"], price["products_buy"] = cal_price(Data["products"])
+            price["components_t2_sell"], price["components_t2_buy"] = cal_price(Data["components_t2"])
+            price["components_t1_sell"], price["components_t1_buy"] = cal_price(Data["components_t1"])
+        if mode in [1, 2]:
+            price["adv_sell"], price["adv_buy"] = cal_price(Data["adv"])
+        if mode in [1, 2, 3]:
+            temp_sell, temp_buy = cal_price(Data["pro"])
+            temp_sell_f, temp_buy_f = cal_price(Data["pro_fuel"])
+            price["pro_sell"] = temp_sell + temp_sell_f
+            price["pro_buy"] = temp_buy + temp_buy_f
+        if mode in [1, 2, 3, 4]:
+            temp_sell, temp_buy = cal_price(Data["raw"])
+            temp_sell_f, temp_buy_f = cal_price(Data["raw_fuel"])
+            price["raw_sell"] = temp_sell + temp_sell_f
+            price["raw_buy"] = temp_buy + temp_buy_f
+        if mode in [5]:
+            price["t1_input_sell"], price["t1_input_buy"] = cal_price(Data["t1_input"])
+            price["t1_pro_sell"], price["t1_pro_buy"] = cal_price(Data["t1_pro"])
+            price["metal_sell"], price["metal_sell"] = cal_price(Data["metal"])
+        if mode in [6]:
+            price["metal_sell"], price["metal_sell"] = cal_price(Data["metal"])
+            price["ore_result_sell"], price["ore_result_buy"] = cal_price(Data["ore_result"])
+    # Save Temp Price and Fee Data
+    User.objects.filter(token=user_token).update(temp_price=str(price))
 
     return render(request, "cal.html", {
         "status": status,
