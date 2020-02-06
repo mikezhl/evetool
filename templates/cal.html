@@ -84,6 +84,10 @@
                         <td><input type="text" name="me_cap" value="{{info.me_cap}}" /> <br></td>
                     </tr>
                     <tr>
+                        <td>me_super </td>
+                        <td><input type="text" name="me_super" value="{{info.me_super}}" /> <br></td>
+                    </tr>
+                    <tr>
                         <td>min_reaction </td>
                         <td><input type="text" name="min_reaction" value="{{info.min_reaction}}" /> <br></td>
                     </tr>
@@ -106,19 +110,19 @@
 
         <div class="first">
             <p>Products[Name Total ME Runs]</p>
-            <textarea name="products" style="width: 250px;height: 90%">{% for i,j in products.items %}{{ j.3 }}&nbsp{{ j.0 }}&nbsp{{ j.1 }}&nbsp{{ j.2 }}&nbsp{% if j.4 %}!{% endif %}{{ j.4 }}&#10;{% endfor %}</textarea>
+            <textarea name="products" style="width: 250px;height: 90%">{% for i,j in products.items %}{{ j.3 }} {{ j.0 }} {{ j.1 }} {{ j.2 }} {% if j.4 %}!{% endif %}{{ j.4 }}&#10;{% endfor %}</textarea>
             <input style="display: block" type="submit" value="Start" formaction="/cal/main/1/"/>
             {% if fee.products %}<p class="prices">Job Fee:{{ fee.products }}M</p>{% endif %}
             {% if price.products_sell %}<p class="prices">Sell:{{ price.products_sell }}M <br> Buy:{{ price.products_buy }}M</p>{% endif %}
         </div>
         <div class="first">
             <div class="second" style="height: 45%">
-                <p>Components_t2[Name Total ME Runs]</p>
-                <textarea name="components_t2" style="width: 250px;height: 90%;">{% for i,j in components_t2.items %}{{ j.3 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
+                <p>Components_t2</p>
+                <textarea name="components_t2" style="width: 250px;height: 90%;">{% for i,j in components_t2.items %}{{ j.3 }} {{ j.0 }}&#10;{% endfor %}</textarea>
             </div>
             <div class="second" style="height: 45%">
                 <p>Components_t1</p>
-                <textarea name="components_t1" style="width: 250px;height: 90%;">{% for i,j in components_t1.items %}{{ j.3 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
+                <textarea name="components_t1" style="width: 250px;height: 90%;">{% for i,j in components_t1.items %}{{ j.3 }} {{ j.0 }}&#10;{% endfor %}</textarea>
                 <input style="display: block" type="submit" value="Start" formaction="/cal/main/2/"/>
                 {% if fee.components %}<p class="prices">Job Fee:{{ fee.components }}M</p>{% endif %}
                 {% if price.components_t2_sell %}<p class="prices">Sell:{{ price.components_t2_sell }}M <br> Buy:{{ price.components_t2_buy }}M</p>{% endif %}
@@ -127,40 +131,40 @@
         </div>
         <div class="first">
             <p>Adv</p>
-            <textarea name="adv" style="width: 250px;height: 90%">{% for i,j in adv.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
+            <textarea name="adv" style="width: 250px;height: 90%">{% for i,j in adv.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
             <input style="display: block" type="submit" value="Start" formaction="/cal/main/3/"/>
             {% if fee.adv %}<p class="prices">Job Fee:{{ fee.adv }}M</p>{% endif %}
             {% if price.adv_sell %}<p class="prices">Sell:{{ price.adv_sell }}M <br> Buy:{{ price.adv_buy }}M</p>{% endif %}
         </div>
         <div class="first">
             <p>Pro</p>
-            <textarea name="pro" style="width: 250px;height: 90%">{% for i,j in pro.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}&#10;{% for i,j in pro_fuel.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
+            <textarea name="pro" style="width: 250px;height: 90%">{% for i,j in pro.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}&#10;{% for i,j in pro_fuel.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
             <input style="display: block" type="submit" value="Start" formaction="/cal/main/4/"/>
             {% if fee.pro %}<p class="prices">Job Fee:{{ fee.pro }}M</p>{% endif %}
             {% if price.pro_sell %}<p class="prices">Sell:{{ price.pro_sell }}M <br> Buy:{{ price.pro_buy }}M</p>{% endif %}
         </div>
         <div class="first">
             <p>Raw</p>
-            <textarea name="raw" style="width: 250px;height: 90%">{% for i,j in raw.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}&#10;{% for i,j in raw_fuel.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
+            <textarea name="raw" style="width: 250px;height: 90%">{% for i,j in raw.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}&#10;{% for i,j in raw_fuel.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
 {#            {% if fee.raw %}<p class="prices">Job Fee:{{ fee.raw }}M</p>{% endif %}#}
             {% if price.raw_sell %}<p class="prices">Sell:{{ price.raw_sell }}M <br> Buy:{{ price.raw_buy }}M</p>{% endif %}
         </div>
         <div class="first">
             <p>T1</p>
-            <textarea name="t1_input" style="width: 250px;height: 300px;">{% for i,j in t1_input.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
+            <textarea name="t1_input" style="width: 250px;height: 300px;">{% for i,j in t1_input.items %}{{ j.3 }} {{ j.0 }} {{ j.1 }} {{ j.2 }}{% if j.4 %}!{% endif %}{{ j.4 }}&#10;{% endfor %}</textarea>
             <input style="display: block" type="submit" value="Start" formaction="/cal/main/5/"/>
             {% if fee.t1_input %}<p class="prices">Job Fee:{{ fee.t1_input }}M</p>{% endif %}
             {% if price.t1_input_sell %}<p class="prices">Sell:{{ price.t1_input_sell }}M <br> Buy:{{ price.t1_input_buy }}M</p>{% endif %}
         </div>
         <div class="first">
             <p>T1_processed</p>
-            <textarea name="t1_pro" style="width: 250px;height: 300px;">{% for i,j in t1_pro.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
+            <textarea name="t1_pro" style="width: 250px;height: 300px;">{% for i,j in t1_pro.items %}{{ j.3 }} {{ j.0 }}&#10;{% endfor %}</textarea>
             {% if fee.t1_pro %}<p class="prices">Job Fee:{{ fee.t1_pro }}M</p>{% endif %}
             {% if price.t1_pro_sell %}<p class="prices">Sell:{{ price.t1_pro_sell }}M <br> Buy:{{ price.t1_pro_buy }}M</p>{% endif %}
         </div>
         <div class="first">
             <p>Metal</p>
-            <textarea name="metal" style="width: 250px;height: 200px;">{% for i,j in metal.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
+            <textarea name="metal" style="width: 250px;height: 200px;">{% for i,j in metal.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
             <input type="text" name="ore_ratio" value="{{ ore_ratio }}" style="display: block;"/>
             <textarea name="ore" style="width: 250px;height: 80px;">{% for i in ore %}{{i}}&#10;{% endfor %}</textarea>
             <input style="display: block" type="submit" value="Start" formaction="/cal/main/6/"/>
@@ -169,13 +173,13 @@
         </div>
         <div class="first">
             <p>Ore</p>
-            <textarea name="ore_result" style="width: 250px;height: 300px;">{% for i,j in ore_result.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
+            <textarea name="ore_result" style="width: 250px;height: 300px;">{% for i,j in ore_result.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
             {% if fee.ore_result %}<p class="prices">Job Fee:{{ fee.ore_result }}M</p>{% endif %}
             {% if price.ore_result_sell %}<p class="prices">Sell:{{ price.ore_result_sell }}M <br> Buy:{{ price.ore_result_buy }}M</p>{% endif %}
         </div>
         <div class="first">
             <p>Inventory</p>
-            <textarea name="inventory" style="width: 250px;height: 300px;">{% for i,j in inventory.items %}{{ j.1 }}&nbsp{{ j.0 }}&#10;{% endfor %}</textarea>
+            <textarea name="inventory" style="width: 250px;height: 300px;">{% for i,j in inventory.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
             {% if price.remain_sell %}<p class="prices">Sell:{{ price.remain_sell }}M <br> Buy:{{ price.remain_buy }}M</p>{% endif %}
         </div>
 

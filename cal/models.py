@@ -1,15 +1,5 @@
 from django.db import models
 
-class Inventory(models.Model):
-    token = models.IntegerField(blank=True, null=True)
-    item_id = models.IntegerField(blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'inventory'
-
-
 class Sdecate(models.Model):
     groupid = models.IntegerField(db_column='groupID', primary_key=True)  # Field name made lowercase.
     categoryid = models.IntegerField(db_column='categoryID', blank=True, null=True)  # Field name made lowercase.
@@ -94,6 +84,7 @@ class User(models.Model):
     me_others = models.FloatField(blank=True, null=True)
     me_cap_comp = models.FloatField(blank=True, null=True)
     me_cap = models.FloatField(blank=True, null=True)
+    me_super = models.FloatField(blank=True, null=True)
     min_reaction = models.IntegerField(blank=True, null=True)
     update_price = models.IntegerField(blank=True, null=True)
 
