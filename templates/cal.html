@@ -51,13 +51,17 @@
                         <td><input type="text" name="tax_standard" value="{{info.tax_standard}}" /> <br></td>
                     </tr>
                     <tr>
-                        <td>tax_cap </td>
-                        <td><input type="text" name="tax_cap" value="{{info.tax_cap}}" /> <br></td>
+                        <td>tax_reprocess </td>
+                        <td><input type="text" name="tax_reprocess" value="{{info.tax_reprocess}}" /> <br></td>
                     </tr>
-                    <tr>
-                        <td>tax_super </td>
-                        <td><input type="text" name="tax_super" value="{{info.tax_super}}" /> <br></td>
-                    </tr>
+{#                    <tr>#}
+{#                        <td>tax_cap </td>#}
+{#                        <td><input type="text" name="tax_cap" value="{{info.tax_cap}}" /> <br></td>#}
+{#                    </tr>#}
+{#                    <tr>#}
+{#                        <td>tax_super </td>#}
+{#                        <td><input type="text" name="tax_super" value="{{info.tax_super}}" /> <br></td>#}
+{#                    </tr>#}
                     <tr>
                         <td>index_reaction </td>
                         <td><input type="text" name="index_reaction" value="{{info.index_reaction}}" /> <br></td>
@@ -124,7 +128,7 @@
             <div class="second" style="height: 45%">
                 <textarea name="components_t1" style="width: 250px;height: 75%">{% for i,j in components_t1.items %}{{ j.3 }} {{ j.0 }}&#10;{% endfor %}</textarea>
                 <input style="display: block" type="submit" value="Start" formaction="/cal/main/2/"/>
-                {% if fee.components %}<p class="prices">Job Fee:{{ fee.components }}M</p>{% endif %}
+                {% if fee.components_t2 %}<p class="prices">Job Fee:{{ fee.components_t2 }}M</p>{% endif %}
                 {% if price.components_t2_sell %}<p class="prices">Sell_t2:{{ price.components_t2_sell }}M || Buy_t2:{{ price.components_t2_buy }}M</p>{% endif %}
                 {% if price.components_t1_sell %}<p class="prices">Sell_t1:{{ price.components_t1_sell }}M || Buy_t1:{{ price.components_t1_buy }}M</p>{% endif %}
             </div>
@@ -148,6 +152,7 @@
             <textarea name="raw" style="width: 250px;height: 85%">{% for i,j in raw.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}&#10;{% for i,j in raw_fuel.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
 {#            {% if fee.raw %}<p class="prices">Job Fee:{{ fee.raw }}M</p>{% endif %}#}
             {% if price.raw_sell %}<p class="prices">Sell:{{ price.raw_sell }}M || Buy:{{ price.raw_buy }}M</p>{% endif %}
+            {% if price.t2_final %}<p class="prices">Total:{{ price.t2_final }}M</p>{% endif %}
         </div>
         <div class="first">
             <p>T1</p>
@@ -176,11 +181,11 @@
             <textarea name="ore_result" style="width: 250px;height: 300px;">{% for i,j in ore_result.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
             {% if fee.ore_result %}<p class="prices">Job Fee:{{ fee.ore_result }}M</p>{% endif %}
             {% if price.ore_result_buy %}<p class="prices">Sell:{{ price.ore_result_sell }}M || Buy:{{ price.ore_result_buy }}M</p>{% endif %}
+            {% if price.t1_final %}<p class="prices">Total:{{ price.t1_final }}M</p>{% endif %}
         </div>
         <div class="first">
             <p>Inventory</p>
             <textarea name="inventory" style="width: 250px;height: 300px;">{% for i,j in inventory.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
-            {% if price.remain_sell %}<p class="prices">Sell:{{ price.remain_sell }}M <br> Buy:{{ price.remain_buy }}M</p>{% endif %}
         </div>
 
     </form>

@@ -73,6 +73,7 @@ class User(models.Model):
     tax_reaction = models.FloatField(blank=True, null=True)
     tax_component = models.FloatField(blank=True, null=True)
     tax_standard = models.FloatField(blank=True, null=True)
+    tax_reprocess = models.FloatField(blank=True, null=True)
     tax_cap = models.FloatField(blank=True, null=True)
     tax_super = models.FloatField(blank=True, null=True)
     index_reaction = models.FloatField(blank=True, null=True)
@@ -89,6 +90,7 @@ class User(models.Model):
     update_price = models.IntegerField(blank=True, null=True)
     temp_price = models.TextField(blank=True, null=True)
     temp_fee = models.TextField(blank=True, null=True)
+    last_time = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False

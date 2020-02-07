@@ -11,8 +11,10 @@
         <form action="/cal/cal_init/" method="get" style="display: inline-block;">
             User Token <input type="text" name="token" value="{{info.token}}" autocomplete="off" /> <br>
             <input type="submit" value="OK" style="margin: 5px 0px 10px 0px;">
+            <input type="submit" value="New User" style="margin: 5px 0px 10px 0px;" formaction="/cal/new/">
             <p style="display: inline-block; margin: 0px;">{% if status %} Successful
-                {% elif status_init %}{% else %} Doesn't exist {% endif %} </p>
+                {% elif status_init %}{% else %} Failed {% endif %} </p>
+            <p>{% if new %}Your new token is:{{ new }}{% endif %}</p>
         </form>
     </div>
 
