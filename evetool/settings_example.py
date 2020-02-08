@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'evetool.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'evetool',
-        'USER': 'root',
-        'PASSWORD': 'Aazhl123',
-        'HOST':'localhost',
-        'PORT':'2333',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST':'',
+        'PORT':'',
     }
 }
 

@@ -20,7 +20,7 @@ def init(request):
 # Generate New User
 def new(request):
     token = round(random.random()*1000000)
-    new_user = User(token=token, system="RF-X7V", tax_reaction=0, tax_component=0, tax_standard=0, tax_reprocess=0, tax_cap=0, tax_super=0, index_reaction=0, index_manufacturing=0, me_reaction=0, me_component=0, me_ship_m=0, me_ship_s=0, me_others=0, me_cap_comp=0, me_cap=0, me_super=0, min_reaction=100, update_price=0, last_time=time.time())
+    new_user = User(token=token, system="RF-X7V", tax_reaction=0, tax_component=0, tax_standard=0, tax_reprocess=0, tax_cap=0, tax_super=0, index_reaction=0, index_manufacturing=0, me_reaction=100, me_component=100, me_ship_m=100, me_ship_s=100, me_others=100, me_cap_comp=100, me_cap=100, me_super=100, min_reaction=100, update_price=0, last_time=time.time())
     new_user.save()
     return render(request, "main.html", {"info": {}, "status": 1, "new": token})
 
@@ -132,7 +132,7 @@ def cal_price(raw):
         'user-agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36"}
     raw_textarea = ""
     for item_id, [total, *others] in raw.items():
-        raw_textarea += others[-1] + " " + str(total) + "\r\n"
+        raw_textarea += Sdenames.objects.get(typeid=item_id).typename + " " + str(total) + "\r\n"
     post_data = {'market': "jita", "raw_textarea": raw_textarea.encode()}
     result = requests.post(url, headers=headers, data=post_data)
     result_dict = json.loads(result.text)
@@ -217,10 +217,12 @@ def main(request, mode):
             raw_xml = ET.fromstring(raw.read())
             new_info["index_manufacturing"] = float(raw_xml[0][0].text)
             new_info["index_reaction"] = float(raw_xml[0][6].text)
-            raw_adjprice = urllib_request.urlopen(
-                "https://esi.evetech.net/latest/markets/prices/?datasource=tranquility").read().decode()
-            for i in eval(raw_adjprice):
-                Sdenames.objects.filter(typeid=i["type_id"]).update(adjprice=i["adjusted_price"])
+            if User.objects.get(token=user_token).id == 1:
+                raw_adjprice = urllib_request.urlopen(
+                    "https://esi.evetech.net/latest/markets/prices/?datasource=tranquility").read().decode()
+                for i in eval(raw_adjprice):
+                    Sdenames.objects.filter(typeid=i["type_id"]).update(adjprice=i["adjusted_price"])
+            print("Adjusted Prices Updated")
         User.objects.filter(token=user_token).update(**new_info)
         Data["info"] = User.objects.get(token=user_token)
 
