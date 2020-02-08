@@ -6,26 +6,42 @@
 
 - 安装Python3.8.1
 - 安装mysql,并导入sql
+- 下载代码
+```
+	git clone https://github.com/zhlzhl123/evetool.git
+```
 - 安装requirements
 ```
-pip install -r requirements.txt
+	pip install -r requirements.txt
 ```
-- 设置并复制setting_example.py为setting.py
+- 设置setting.py
+```
+	cp settings_example.py settings.py
+	vi settings.py
+```
+- 安装uwsgi
+```
+	pip install uwsgi
+	uwsgi --http :8000 --module evetool.wsgi
+```
 
 ## 使用
 
-- 获取token并输入进入计算界面
+- 获取token并进入计算界面
 - 设置参数,其中
 ```
-update_price 勾选并点击保存后,使之后的计算获取Jita估价
-use_remain 勾选后,使下一次就算使用库存
-update_index 勾选并点击保存后,更新一次星系系数,如果你是第一个用户,还会更新所有物品的adjusted price
+	update_price 勾选并点击保存后,使之后的计算获取Jita估价
+	use_remain 勾选后,使下一次就算使用库存,需要先Inventory,格式比如
+		Phenolic Composites 50000
+		Fernite Carbide 2333333
+	update_index 勾选并点击保存后,更新一次星系系数,如果你是第一个用户,还会更新所有物品的adjusted price
 ```
-- 其中Products和T1框可以按照[Name Total_Num ME Runs]格式输入,如在Products中输入,如果没有设置全部参数则将自动生成
+- 点击每一个start按钮意味着,把该按钮上方填入的数据作为输入,计算后面所需的产物。比如,在Products输入Muninn 1然后点击下方start,在Advanced Moon Materials输入Phenolic Composites 981117然后点击下方start
+- 其中Products和T1框可以按照[Name Total_Num ME Runs]格式输入,如果没有设置全部参数则将自动生成,比如在Products中输入:(在末尾添加!参数,如下方Sabre,可自定义该产物的建筑材料减免)
 ```
 Muninn 50 4 2
 Falcon 50 4 2
-Sabre 100 4 2
+Sabre 100 4 2 !90
 Wasp II 100 4 10
 damage control II 100 4 10
 Rhea 1 4 1

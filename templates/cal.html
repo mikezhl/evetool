@@ -134,21 +134,21 @@
             </div>
         </div>
         <div class="first">
-            <p>Adv</p>
+            <p>Advanced Moon Materials</p>
             <textarea name="adv" style="width: 250px;height: 85%">{% for i,j in adv.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
             <input style="display: block" type="submit" value="Start" formaction="/cal/main/3/"/>
             {% if fee.adv %}<p class="prices">Job Fee:{{ fee.adv }}M</p>{% endif %}
             {% if price.adv_sell %}<p class="prices">Sell:{{ price.adv_sell }}M || Buy:{{ price.adv_buy }}M</p>{% endif %}
         </div>
         <div class="first">
-            <p>Pro</p>
+            <p>Processed Moon Materials</p>
             <textarea name="pro" style="width: 250px;height: 85%">{% for i,j in pro.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}&#10;{% for i,j in pro_fuel.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
             <input style="display: block" type="submit" value="Start" formaction="/cal/main/4/"/>
             {% if fee.pro %}<p class="prices">Job Fee:{{ fee.pro }}M</p>{% endif %}
             {% if price.pro_sell %}<p class="prices">Sell:{{ price.pro_sell }}M || Buy:{{ price.pro_buy }}M</p>{% endif %}
         </div>
         <div class="first">
-            <p>Raw</p>
+            <p>Raw Moon Materials</p>
             <textarea name="raw" style="width: 250px;height: 85%">{% for i,j in raw.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}&#10;{% for i,j in raw_fuel.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
 {#            {% if fee.raw %}<p class="prices">Job Fee:{{ fee.raw }}M</p>{% endif %}#}
             {% if price.raw_sell %}<p class="prices">Sell:{{ price.raw_sell }}M || Buy:{{ price.raw_buy }}M</p>{% endif %}

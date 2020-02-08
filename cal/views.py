@@ -592,7 +592,7 @@ def main(request, mode):
         for i in Data["ore"]:
             num = math.ceil(raw_result[n])
             ore_vector.append(num)
-            Data["ore_result"][i] = [num, i]
+            Data["ore_result"][Sdenames.objects.get(typename=i).typeid] = [num, i]
             price["ore_result_buy"] += num * price_ore[n] / 1000000
             n += 1
         price["ore_result_buy"] = round(price["ore_result_buy"], 1)
