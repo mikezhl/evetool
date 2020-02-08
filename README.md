@@ -1,6 +1,7 @@
 ## 简介
 
 一个计算EVE Online工业材料的小工具,丑,但是实用
+http://lhdg.cc/
 
 ## 安装
 
@@ -31,9 +32,11 @@ uwsgi --http :8000 --module evetool.wsgi
 - 设置参数,其中
 ```
 update_price 勾选并点击保存后,使之后的计算获取Jita估价
+
 use_remain 勾选后,使下一次就算使用库存,需要先Inventory,格式比如
-	Phenolic Composites 50000
-	Fernite Carbide 2333333
+Phenolic Composites 50000
+Fernite Carbide 2333333
+
 update_index 勾选并点击保存后,更新一次星系系数,如果你是第一个用户,还会更新所有物品的adjusted price
 ```
 - 点击每一个start按钮意味着,把该按钮上方填入的数据作为输入,计算后面所需的产物。比如,在Products输入Muninn 1然后点击下方start,在Advanced Moon Materials输入Phenolic Composites 981117然后点击下方start
