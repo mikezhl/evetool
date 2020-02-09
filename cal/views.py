@@ -149,6 +149,7 @@ def main(request, mode):
     status = 1
     use_remain = 0
     fee = {}
+    price ={}
     fee_temp = {}
     try:
         price = eval(User.objects.get(token=user_token).temp_price)
