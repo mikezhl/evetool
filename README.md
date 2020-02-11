@@ -39,10 +39,10 @@ Set those coefficients that affect the calculation
 - update_index if it is checked and then click save, all the indexes of system will be updated. If your user_id is 1, adjusted prices for the calculation of job fee will be updated as well (take a long time)
 - others are straightforward.
 
-You can calculate the material needed from every steps. A correct format for inputs is needed. A line for a item, with coefficients follow by it in order. (Only name is required, if others coefficients are missing, it will use default value)
-- "Products and T1": Name Total_Number=1 Material_Efficiency=0 Runs_per_Time=10000 !Structure_Material_Efficiency=0
+You can calculate the material needed from every steps. A correct format for inputs is needed. A line for a item, with coefficients follow by it in order. (Only name is required, if others coefficients are missing, it will use default value. If Structure_ME is not given, it will use the coresponding value from the settings automatically)
+- For Products and T1: Name Total_Number=1 ME=0 Runs_per_Time=10000 !Structure_ME=0
 - For others: Name Total_Number=1
-See example below for "Products":
+- See example below for "Products":
 ```
 Muninn 50 4 2
 Falcon,50
