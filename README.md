@@ -94,4 +94,4 @@ Compressed Sharp Crokite
 Compressed Triclinic Bistot
 ```
 - Example
-![image](https://github.com/zhlzhl123/evetool/blob/master/example/example.JPG)
+![image](https://github.com/zhlzhl123/evetool/blob/master/example/example.jpg)
