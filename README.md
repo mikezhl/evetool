@@ -52,7 +52,7 @@ damage control II 100 4 10
 Rhea
 Quake L 100 10 100
 ```
-Example for "Advanced Moon Materials"
+- Example for "Advanced Moon Materials"
 ```
 Phenolic Composites 331102
 Fernite Carbide 11993397
