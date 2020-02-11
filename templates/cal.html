@@ -27,7 +27,7 @@
                         <td><input type="checkbox" name="update_price" value=update_price {% if info.update_price %}checked{% endif %} style="margin: 0px;" /><br></td>
                     </tr>
                     <tr>
-                        <td>use_remain </td>
+                        <td>use_inventory </td>
                         <td><input type="checkbox" name="use_remain" value="use_remain" style="margin: 0px;" /><br></td>
                     </tr>
                     <tr>
@@ -113,7 +113,7 @@
         </div>
 
         <div class="first">
-            <p>Products[Name Total ME Runs]</p>
+            <p>T2 Products[Name Total ME Runs]</p>
             <textarea name="products" style="width: 250px;height: 85%">{% for i,j in products.items %}{{ j.3 }} {{ j.0 }} {{ j.1 }} {{ j.2 }} {% if j.4 %}!{% endif %}{{ j.4 }}&#10;{% endfor %}</textarea>
             <input style="display: block" type="submit" value="Start" formaction="/cal/main/1/"/>
             {% if fee.products %}<p class="prices">Job Fee:{{ fee.products }}M</p>{% endif %}
@@ -152,7 +152,7 @@
             <textarea name="raw" style="width: 250px;height: 85%">{% for i,j in raw.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}&#10;{% for i,j in raw_fuel.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
 {#            {% if fee.raw %}<p class="prices">Job Fee:{{ fee.raw }}M</p>{% endif %}#}
             {% if price.raw_sell %}<p class="prices">Sell:{{ price.raw_sell }}M || Buy:{{ price.raw_buy }}M</p>{% endif %}
-            {% if price.t2_final %}<p class="prices">Total:{{ price.t2_final }}M</p>{% endif %}
+            {% if price.t2_final %}<p class="prices">Total Estimated:{{ price.t2_final }}M</p>{% endif %}
         </div>
         <div class="first">
             <p>T1</p>
@@ -181,7 +181,7 @@
             <textarea name="ore_result" style="width: 250px;height: 300px;">{% for i,j in ore_result.items %}{{ j.1 }} {{ j.0 }}&#10;{% endfor %}</textarea>
             {% if fee.ore_result %}<p class="prices">Job Fee:{{ fee.ore_result }}M</p>{% endif %}
             {% if price.ore_result_buy %}<p class="prices">Sell:{{ price.ore_result_sell }}M || Buy:{{ price.ore_result_buy }}M</p>{% endif %}
-            {% if price.t1_final %}<p class="prices">Total:{{ price.t1_final }}M</p>{% endif %}
+            {% if price.t1_final %}<p class="prices">Total Estimated:{{ price.t1_final }}M</p>{% endif %}
         </div>
         <div class="first">
             <p>Inventory</p>

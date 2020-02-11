@@ -35,14 +35,19 @@ Click "new user" and "ok", each token will save a set of settings.
 Set those coefficients that affect the calculation
 
 - update_price: if it is checked and then click save, later calculations will find the latest prices at jita
-- use_remain: if it is checked, the next calculation will include what is remain in the inventory.
+- use_inventory: if it is checked, the next calculation will include what is remain in the inventory.
 - update_index if it is checked and then click save, all the indexes of system will be updated. If your user_id is 1, adjusted prices for the calculation of job fee will be updated as well (take a long time)
 - others are straightforward.
 
-You can calculate the material needed from every steps. A correct format for inputs is needed. A line for a item, with coefficients follow by it in order. (Only name is required, if others coefficients are missing, it will use default value. If Structure_ME is not given, it will use the coresponding value from the settings automatically)
-- For Products and T1: Name Total_Number=1 ME=0 Runs_per_Time=10000 !Structure_ME=0
+You can calculate the materials needed from any steps. A correct format of inputs is needed. Each line should contain only one item, with coefficients follow by it in order specify below. 
+Features:
+- Only name is required, if others coefficients are missing, it will use default value. If Structure_ME is not given, it will use the coresponding value from the settings automatically
+- The products you want must be enter into corresponding blocks, like put "Muninn" in "T2 Products" or put "Rupture" in "T1"
+- A "Total Estimated" value is given when you calculating from "T2 Products" or "T1", it is a sum of the raw materials buy price and the total job fees needed.
+Formats of inputs:
+- For T2 Products and T1: Name Total_Number=1 ME=0 Runs_per_Time=10000 !Structure_ME=0
 - For others: Name Total_Number=1
-- See example below for "Products":
+- Example for calculating "T2 Products":
 ```
 Muninn 50 4 2
 Falcon,50
@@ -52,7 +57,7 @@ damage control II 100 4 10
 Rhea
 Quake L 100 10 100
 ```
-- Example for "Advanced Moon Materials"
+- Example for calculating "Advanced Moon Materials"
 ```
 Phenolic Composites 331102
 Fernite Carbide 11993397
@@ -64,7 +69,7 @@ Plasmonic Metamaterials 155116
 Fermionic Condensates 3582
 Fullerides 262502
 ```
-Calculation for the compressed ore need these:
+Calculation for the compressed ore will give a combination has minimum price. It need these (An example):
 - Amount of metal needed
 ```
 Tritanium 30250000
@@ -89,4 +94,4 @@ Compressed Sharp Crokite
 Compressed Triclinic Bistot
 ```
 - Example
-![image](https://github.com/zhlzhl123/evetool/blob/master/example/1.jpg)
+![image](https://github.com/zhlzhl123/evetool/blob/master/example/example.JPG)
