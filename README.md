@@ -88,5 +88,5 @@ Compressed Onyx Ochre
 Compressed Sharp Crokite
 Compressed Triclinic Bistot
 ```
-- 例子
+- Example
 ![image](https://github.com/zhlzhl123/evetool/blob/master/example/1.jpg)
