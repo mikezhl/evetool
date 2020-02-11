@@ -44,6 +44,7 @@ Features:
 - Only name is required, if others coefficients are missing, it will use default value. If Structure_ME is not given, it will use the coresponding value from the settings automatically
 - The products you want must be enter into corresponding blocks, like put "Muninn" in "T2 Products" or put "Rupture" in "T1"
 - A "Total Estimated" value is given when you calculating from "T2 Products" or "T1", it is a sum of the raw materials buy price and the total job fees needed.
+
 Formats of inputs:
 - For T2 Products and T1: Name Total_Number=1 ME=0 Runs_per_Time=10000 !Structure_ME=0
 - For others: Name Total_Number=1
